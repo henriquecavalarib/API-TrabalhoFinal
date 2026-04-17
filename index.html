@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookStore Manager | Admin</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --accent: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --danger: #ef4444;
+            --success: #22c55e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn {
+            background-color: var(--accent);
+            color: var(--bg-color);
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        /* Área de Filtros */
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .filters input, .filters select {
+            background: var(--bg-color);
+            border: 1px solid #334155;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 4px;
+        }
+
+        /* Tabela Estilizada */
+        .table-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background-color: #334155;
+            padding: 1rem;
+            color: var(--accent);
+            font-size: 0.9rem;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #334155;
+            font-size: 0.95rem;
+        }
+
+        tr:hover {
+            background-color: #2d3748;
+        }
+
+        .badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            background: #475569;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        .btn-delete { background-color: var(--danger); color: white; }
+
+        /* Paginação */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .page-info {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>BookStore API <span style="color: white;">| Admin</span></h1>
+            <button class="btn">+ Adicionar Livro</button>
+        </header>
+
+        <section class="filters">
+            <input type="text" placeholder="Buscar por título ou autor...">
+            <select>
+                <option value="">Todos os Gêneros</option>
+                <option value="Fantasia">Fantasia</option>
+                <option value="Distopia">Distopia</option>
+                <option value="Terror">Terror</option>
+            </select>
+            <select>
+                <option value="ASC">Ordem Crescente</option>
+                <option value="DESC">Ordem Decrescente</option>
+            </select>
+        </section>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Título</th>
+                        <th>Autor</th>
+                        <th>Gênero</th>
+                        <th>Estoque</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="book-list">
+                    <tr>
+                        <td>1</td>
+                        <td><strong>O Senhor dos Anéis</strong></td>
+                        <td>J.R.R. Tolkien</td>
+                        <td><span class="badge">Fantasia</span></td>
+                        <td>10 un.</td>
+                        <td class="actions">
+                            <button class="btn btn-sm">Editar</button>
+                            <button class="btn btn-sm btn-delete">Excluir</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td><strong>1984</strong></td>
+                        <td>George Orwell</td>
+                        <td><span class="badge">Distopia</span></td>
+                        <td>15 un.</td>
+                        <td class="actions">
+                            <button class="btn btn-sm">Editar</button>
+                            <button class="btn btn-sm btn-delete">Excluir</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pagination">
+            <button class="btn btn-sm"><< Anterior</button>
+            <span class="page-info">Página 1 de 4</span>
+            <button class="btn btn-sm">Próxima >></button>
+        </div>
+    </div>
+    <script>
+    const API_URL = 'http://127.0.0.1:3000/books';    
+    let currentPage = 1;
+    const limit = 5;
+
+    // Carregar livros ao iniciar
+    document.addEventListener('DOMContentLoaded', () => fetchBooks());
+
+    // Função Principal: Buscar e Listar Livros
+    async function fetchBooks() {
+        try {
+            const response = await fetch(`${API_URL}?page=${currentPage}&limit=${limit}`);
+            const result = await response.json();
+            renderTable(result.data);
+            updatePaginationInfo(result.page);
+        } catch (error) {
+            console.error("Erro ao carregar dados:", error);
+            alert("Erro ao conectar com a API. Certifique-se que o servidor está rodando.");
+        }
+    }
+
+    // Renderizar a tabela dinamicamente
+    function renderTable(books) {
+        const tbody = document.getElementById('book-list');
+        tbody.innerHTML = ''; // Limpa a tabela
+
+        books.forEach(book => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${book.id}</td>
+                <td><strong>${book.titulo || book.title}</strong></td>
+                <td>${book.autor || book.author}</td>
+                <td><span class="badge">${book.genero || book.genre}</span></td>
+                <td>${book.estoque || book.stock} un.</td>
+                <td class="actions">
+                    <button class="btn btn-sm" onclick="editBook(${book.id})">Editar</button>
+                    <button class="btn btn-sm btn-delete" onclick="deleteBook(${book.id})">Excluir</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    // Função para Deletar
+    async function deleteBook(id) {
+        if (!confirm("Tem certeza que deseja excluir este livro?")) return;
+
+        try {
+            const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+            if (response.status === 204) {
+                fetchBooks(); // Recarrega a lista
+            } else {
+                alert("Erro ao excluir livro.");
+            }
+        } catch (error) {
+            console.error("Erro:", error);
+        }
+    }
+
+    // Controle de Paginação
+    function changePage(delta) {
+        if (currentPage + delta > 0) {
+            currentPage += delta;
+            fetchBooks();
+        }
+    }
+
+    function updatePaginationInfo(page) {
+        document.querySelector('.page-info').innerText = `Página ${page}`;
+    }
+
+    // Função para o botão "+ Adicionar Livro" (Exemplo via Prompt para simplificar)
+    document.querySelector('header .btn').addEventListener('click', async () => {
+        const titulo = prompt("Título do livro:");
+        const autor = prompt("Autor:");
+        const genero = prompt("Gênero:");
+        const estoque = prompt("Quantidade em estoque:");
+
+        if (titulo && autor) {
+            const novoLivro = { titulo, autor, genero, estoque: parseInt(estoque), ano: 2024 };
+            
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(novoLivro)
+                });
+
+                if (response.ok) fetchBooks();
+            } catch (error) {
+                alert("Erro ao salvar livro.");
+            }
+        }
+    });
+
+    // Função de Edição (Placeholder para demonstrar funcionalidade)
+    async function editBook(id) {
+        const novoEstoque = prompt("Digite a nova quantidade em estoque:");
+        if (novoEstoque === null) return;
+
+        try {
+            // Primeiro buscamos o livro atual para manter os dados que não serão mudados
+            const res = await fetch(`${API_URL}/${id}`);
+            const livro = await res.json();
+            
+            livro.estoque = parseInt(novoEstoque);
+
+            await fetch(`${API_URL}/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(livro)
+            });
+            fetchBooks();
+        } catch (error) {
+            alert("Erro ao editar.");
+        }
+    }
+
+    // Ligar botões de paginação do HTML
+    const pageButtons = document.querySelectorAll('.pagination .btn');
+    pageButtons[0].onclick = () => changePage(-1); // Anterior
+    pageButtons[1].onclick = () => changePage(1);  // Próxima
+</script>
+
+</body>
+</html>
