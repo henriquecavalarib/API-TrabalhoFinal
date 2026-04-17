@@ -93,3 +93,7 @@ O sistema valida as seguintes condições antes de processar requisições POST 
 * `400 Bad Request`: Erro de validação nos dados enviados.
 * `404 Not Found`: Registro ou rota não localizada.
 * `500 Internal Server Error`: Falha inesperada no servidor.
+
+## Link do Projeto
+Acesse a interface funcional através do link abaixo:
+https://henriquecavalarib.github.io/API-TrabalhoFinal/
