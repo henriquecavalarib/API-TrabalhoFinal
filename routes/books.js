@@ -38,10 +38,49 @@ router.get('/', (req, res) => {
 });
 
 // GET - Buscar por ID
-router.get('/:id', (req, res) => {
-    db.get(`SELECT * FROM books WHERE id = ?`, [req.params.id], (err, row) => {
-        if (!row) return res.status(404).json({ message: "Livro não encontrado" });
-        res.status(200).json(row);
+// routes/books.js
+
+router.get('/', (req, res) => {
+    // Captura os query params da URL
+    // Exemplo: /books?page=2&limit=5&genero=Fantasia
+    let { page = 1, limit = 5, genero, author, sortBy = 'id', order = 'ASC' } = req.query;
+    
+    const offset = (page - 1) * limit;
+
+    let sql = `SELECT * FROM livros WHERE 1=1`;
+    let params = [];
+
+    // Filtro por Gênero
+    if (genero) {
+        sql += ` AND genero = ?`;
+        params.push(genero);
+    }
+
+    // Filtro por Autor (busca parcial)
+    if (author) {
+        sql += ` AND autor LIKE ?`;
+        params.push(`%${author}%`);
+    }
+
+    // Ordenação Segura
+    const colunasValidas = ['id', 'titulo', 'ano', 'estoque'];
+    if (!colunasValidas.includes(sortBy)) sortBy = 'id';
+    const direcao = order.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
+
+    sql += ` ORDER BY ${sortBy} ${direcao} LIMIT ? OFFSET ?`;
+    params.push(parseInt(limit), parseInt(offset));
+
+    db.all(sql, params, (err, rows) => {
+        if (err) {
+            return res.status(500).json({ error: "Erro ao consultar o banco de dados" });
+        }
+        
+        // Retorna a estrutura que você viu no seu print
+        res.status(200).json({
+            page: parseInt(page),
+            limit: parseInt(limit),
+            data: rows
+        });
     });
 });
 
